@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Browse Models — AURUM{% endblock %}
+{% block head %}
+<style>
+  .browse-wrap { padding: 3rem; }
+  .page-header { margin-bottom: 3rem; }
+
+  .category-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 0;
+  }
+  .tab-btn {
+    background: none; border: none; color: var(--text-muted);
+    font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.8rem 1.5rem; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .category-section { display: none; }
+  .category-section.active { display: block; }
+
+  .cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .car-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: all 0.3s; cursor: pointer;
+    position: relative;
+  }
+  .car-card:hover {
+    border-color: var(--border-light);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(108,63,255,0.2);
+  }
+
+  .car-card-header {
+    padding: 1.5rem 1.5rem 1rem;
+    background: linear-gradient(135deg, rgba(108,63,255,0.1), rgba(0,212,255,0.05));
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .car-name { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700; }
+  .car-engine { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .car-card-body { padding: 1.5rem; }
+
+  .car-specs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+  .spec-item { /* intentionally empty */ }
+  .spec-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .spec-val { font-family: 'Space Mono', monospace; font-size: 0.9rem; font-weight: 700; color: var(--text); margin-top: 0.1rem; }
+
+  .car-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+
+  .engine-indicator {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-right: 0.4rem;
+  }
+  .petrol  { background: #ff9d4f; box-shadow: 0 0 6px #ff9d4f; }
+  .diesel  { background: #4f8fff; box-shadow: 0 0 6px #4f8fff; }
+  .electric{ background: var(--success); box-shadow: 0 0 6px var(--success); }
+  .hybrid  { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+
+  .hp-bar-wrap { margin-top: 0.4rem; }
+  .hp-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .hp-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 1s ease;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="browse-wrap">
+  <div class="page-header fade-up">
+    <div class="section-eyebrow">Fleet Catalog</div>
+    <h1 class="section-title" style="font-size:2.5rem; margin-top:0.5rem">Browse Models</h1>
+    <p style="color:var(--text-muted); margin-top:0.7rem">{% set total = namespace(count=0) %}{% for v in cars.values() %}{% set total.count = total.count + v|length %}{% endfor %}{{ total.count }} variants across all categories</p>
+  </div>
+
+  <div class="category-tabs fade-up delay-1">
+    {% for cat in cars.keys() %}
+    <button class="tab-btn {% if loop.first %}active{% endif %}" onclick="switchTab('{{ cat }}', this)">
+      {{ cat }}
+      <span style="font-size:0.72rem; opacity:0.6; margin-left:0.4rem">({{ cars[cat]|length }})</span>
+    </button>
+    {% endfor %}
+  </div>
+
+  {% for cat, car_list in cars.items() %}
+  <div class="category-section {% if loop.first %}active{% endif %}" id="tab-{{ cat }}">
+    <div class="cars-grid">
+      {% for car in car_list %}
+      <div class="car-card fade-up" style="animation-delay: {{ loop.index0 * 0.05 }}s; opacity:0"
+           onclick="window.location='/configure?model={{ car.car_model|urlencode }}&engine={{ car.engine_type }}&category={{ cat }}'">
+        <div class="car-card-header">
+          <div>
+            <div class="car-name">{{ car.car_model }}</div>
+            <div class="car-engine">
+              <span class="engine-indicator {{ car.engine_type|lower }}"></span>
+              {{ car.engine_type }}
+            </div>
+          </div>
+          <span class="badge {% if cat == 'Sports' %}badge-gold{% elif cat == 'SUV' %}badge-cyan{% else %}badge-purple{% endif %}">
+            {{ cat }}
+          </span>
+        </div>
+
+        <div class="car-card-body">
+          <div class="car-specs">
+            <div class="spec-item">
+              <div class="spec-lbl">Horsepower</div>
+              <div class="spec-val">{{ car.horsepower }} HP</div>
+              <div class="hp-bar-wrap">
+                <div class="hp-bar"><div class="hp-fill" style="width:{{ (car.horsepower / 600 * 100)|int }}%"></div></div>
+              </div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-lbl">Mileage</div>
+              <div class="spec-val">{{ car.mileage_kmpl }} kmpl</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-lbl">Top Speed</div>
+              <div class="spec-val">{{ car.top_speed_kmph }} km/h</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-lbl">Seating</div>
+              <div class="spec-val">{{ car.seating_capacity }} seats</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="car-footer">
+          <span style="font-size:0.78rem; color:var(--text-muted)">Base Price</span>
+          <span class="price-sm">PKR {{ car.base_price_million_pkr }}M</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function switchTab(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.category-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + cat).classList.add('active');
+}
+</script>
+{% endblock %}

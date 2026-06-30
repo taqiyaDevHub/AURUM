@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Insights — AURUM{% endblock %}
+{% block head %}
+<style>
+  .seg-wrap { padding: 3rem; }
+  .seg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+
+  .seg-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 20px; overflow: hidden; transition: all 0.3s;
+  }
+  .seg-card:hover { border-color: var(--border-light); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(108,63,255,0.15); }
+
+  .seg-header {
+    padding: 1.5rem 1.5rem 1rem;
+    background: linear-gradient(135deg, rgba(108,63,255,0.12), rgba(0,212,255,0.04));
+    border-bottom: 1px solid var(--border);
+  }
+  .seg-name { font-family: 'Orbitron', monospace; font-size: 0.9rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .seg-size-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.8rem; overflow: hidden; }
+  .seg-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 2px; transition: width 1.2s ease; }
+
+  .seg-body { padding: 1.5rem; }
+  .seg-detail { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .seg-detail:last-child { border-bottom: none; }
+  .seg-detail-lbl { color: var(--text-muted); }
+  .seg-detail-val { font-weight: 600; }
+
+  /* Chart visual */
+  .chart-section {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 2rem; margin-bottom: 2rem;
+  }
+  .chart-title { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 800; color: var(--accent); margin-bottom: 1.5rem; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 1rem; height: 160px; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; height: 100%; justify-content: flex-end; }
+  .bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--primary-glow), var(--primary));
+    transition: height 1s ease; min-height: 4px;
+    box-shadow: 0 0 10px rgba(108,63,255,0.3);
+    position: relative;
+  }
+  .bar:hover { background: linear-gradient(180deg, var(--accent), var(--primary)); }
+  .bar-label { font-size: 0.7rem; color: var(--text-muted); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .bar-pct { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="seg-wrap">
+  <div class="fade-up">
+    <div class="section-eyebrow">Intelligence Layer</div>
+    <h1 class="section-title" style="font-size:2.2rem; margin-top:0.5rem">Buyer Insights</h1>
+    <p style="color:var(--text-muted); margin-top:0.6rem">ML-powered segmentation of car buyers based on configuration patterns.</p>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" style="display:flex; align-items:center; gap:1rem; margin-top:3rem; color:var(--text-muted)">
+    <div class="spinner"></div> Analyzing buyer segments…
+  </div>
+
+  <div id="seg-content" style="display:none">
+    <!-- Bar Chart -->
+    <div class="chart-section fade-up delay-1" style="margin-top:2rem">
+      <div class="chart-title">SEGMENT DISTRIBUTION</div>
+      <div class="bar-chart" id="bar-chart"></div>
+    </div>
+
+    <!-- Segment Cards -->
+    <div class="seg-grid" id="seg-grid"></div>
+  </div>
+
+  <div id="seg-error" style="display:none; margin-top:3rem">
+    <div style="color:var(--text-muted); padding:2rem; text-align:center">
+      <div style="font-size:2rem; margin-bottom:0.8rem">📊</div>
+      <div>Segment data unavailable. Models may need training.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const COLORS = ['var(--primary)', 'var(--accent)', 'var(--accent2)', 'var(--success)', 'var(--gold)', '#ff7043'];
+
+async function loadSegments() {
+    try {
+        const segments = await apiFetch('/api/segments');
+        document.getElementById('loading').style.display = 'none';
+
+  if (!segments || segments.error || !segments.length) {
+    document.getElementById('seg-error').style.display = 'block'; return;
+  }
+
+  document.getElementById('seg-content').style.display = 'block';
+
+  // Bar chart
+  const maxPct = Math.max(...segments.map(s => s.percentage));
+  document.getElementById('bar-chart').innerHTML = segments.map((s, i) => `
+    <div class="bar-wrap">
+      <span class="bar-pct">${s.percentage.toFixed(1)}%</span>
+      <div class="bar" style="height:${(s.percentage/maxPct*130)}px; background:linear-gradient(180deg,${COLORS[i%COLORS.length]}, ${COLORS[(i+1)%COLORS.length]})"
+           title="${s.name}: ${s.size} users"></div>
+      <span class="bar-label">${s.name.replace('Segment', 'Seg')}</span>
+    </div>`).join('');
+
+  // Cards
+  document.getElementById('seg-grid').innerHTML = segments.map((s, i) => `
+    <div class="seg-card fade-up" style="animation-delay:${i*0.1}s; opacity:0">
+      <div class="seg-header">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.3rem">
+          <div class="seg-name">${s.name}</div>
+          <span class="badge badge-purple">${s.size} users</span>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-muted)">${s.percentage.toFixed(1)}% of buyers</div>
+        <div class="seg-size-bar"><div class="seg-fill" style="width:${s.percentage}%"></div></div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-detail"><span class="seg-detail-lbl">Budget Range</span><span class="seg-detail-val">${s.budget_range || '—'}</span></div>
+        ${s.default_config ? `
+        <div class="seg-detail"><span class="seg-detail-lbl">Preferred Type</span><span class="seg-detail-val">${s.default_config.car_type || '—'}</span></div>
+        <div class="seg-detail"><span class="seg-detail-lbl">Engine Choice</span><span class="seg-detail-val">${s.default_config.engine || '—'}</span></div>` : ''}
+      </div>
+    </div>`).join('');
+} catch(e) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('seg-error').style.display = 'block';
+    }
+}
+
+loadSegments();
+</script>
+{% endblock %}

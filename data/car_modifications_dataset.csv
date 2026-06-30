@@ -1,0 +1,151 @@
+s_no,modification_name,category,compatibility,price_pkr,installation_time_hours,popularity_rating,warranty_years
+1,Black Alloy Wheels,Exterior,All Models,200000,3,4.8,3
+2,Chrome Alloy Wheels,Exterior,All Models,220000,3,4.5,3
+3,Carbon Fiber Spoiler,Exterior,Sports,350000,4,4.9,2
+4,Rear Spoiler Standard,Exterior,Sports,250000,3,4.6,2
+5,Panoramic Sunroof,Exterior,SUV;Sedan,450000,6,4.8,5
+6,Standard Sunroof,Exterior,SUV;Sedan,300000,5,4.5,4
+7,LED Headlight Upgrade,Lighting,All Models,180000,2,4.7,3
+8,Matrix LED Headlights,Lighting,Luxury Models,350000,3,4.9,4
+9,Premium Leather Interior,Interior,All Models,500000,8,4.8,5
+10,Sport Interior Package,Interior,Sports,420000,7,4.7,4
+11,Ambient Lighting Kit,Interior,All Models,120000,2,4.6,2
+12,Premium Sound System,Entertainment,All Models,280000,4,4.8,3
+13,Touchscreen Infotainment Pro,Entertainment,All Models,350000,5,4.9,3
+14,Wireless Charging Pad,Technology,All Models,60000,1,4.5,2
+15,360 Camera System,Safety,SUV;Luxury Models,320000,4,4.8,3
+16,Parking Sensors,Safety,All Models,90000,2,4.6,2
+17,Adaptive Cruise Control,Safety,SUV;Sedan,400000,5,4.9,4
+18,Lane Assist System,Safety,All Models,280000,4,4.7,3
+19,Performance Exhaust,Performance,Sports,450000,5,4.9,2
+20,Turbo Upgrade Kit,Performance,Sports,650000,8,4.8,2
+21,Suspension Lowering Kit,Performance,Sports;Sedan,300000,6,4.6,2
+22,Offroad Tire Package,Performance,SUV,380000,4,4.7,3
+23,Roof Rails,Exterior,SUV,110000,2,4.4,3
+24,Side Steps,Exterior,SUV,140000,3,4.5,3
+25,Tinted Windows,Exterior,All Models,80000,2,4.7,2
+26,Ceramic Coating,Exterior,All Models,150000,5,4.8,5
+27,Dash Camera,Safety,All Models,50000,1,4.5,2
+28,Blind Spot Monitoring,Safety,All Models,260000,4,4.8,3
+29,Heated Seats,Interior,SUV;Luxury Models,210000,3,4.6,3
+30,Ventilated Seats,Interior,Luxury Models,280000,4,4.7,3
+31,Custom Steering Wheel,Interior,Sports,170000,2,4.5,2
+32,Digital Instrument Cluster,Technology,All Models,240000,3,4.8,3
+33,Heads Up Display,Technology,Luxury Models,320000,4,4.9,3
+34,Auto Tailgate,SUV Features,SUV,190000,3,4.6,3
+35,Electric Seat Adjustment,Interior,All Models,260000,4,4.7,3
+36,Memory Seats,Interior,Luxury Models,340000,5,4.8,4
+37,Performance Brake Kit,Performance,Sports,520000,6,4.9,2
+38,Body Kit Aero,Exterior,Sports,480000,7,4.8,2
+39,Rear Entertainment Screens,Entertainment,SUV,300000,5,4.6,3
+40,Voice Assistant Integration,Technology,All Models,140000,2,4.7,2
+41,Smart Keyless Entry,Technology,All Models,95000,1,4.6,2
+42,Remote Engine Start,Technology,SUV;Sedan,130000,2,4.7,2
+43,Premium Floor Mats,Interior,All Models,45000,1,4.4,1
+44,Custom Paint Finish,Exterior,All Models,550000,10,4.9,5
+45,Neon Underglow Lights,Exterior,Sports,160000,3,4.5,2
+46,Air Suspension,Performance,SUV;Luxury Models,750000,8,4.9,3
+47,Performance Air Intake,Performance,Sports,290000,4,4.7,2
+48,Rear Diffuser,Exterior,Sports,210000,3,4.6,2
+49,Wireless Apple CarPlay,Entertainment,All Models,85000,1,4.8,2
+50,Android Auto Integration,Entertainment,All Models,85000,1,4.8,2
+51,Carbon Fiber Hood,Exterior,Sports,620000,8,4.9,3
+52,Gloss Black Roof Wrap,Exterior,All Models,180000,4,4.6,2
+53,Diamond Cut Alloys,Exterior,All Models,260000,3,4.8,3
+54,Red Brake Calipers,Performance,Sports,95000,2,4.5,2
+55,Blue Brake Calipers,Performance,Sports,95000,2,4.5,2
+56,Performance ECU Tune,Performance,Sports,480000,5,4.9,2
+57,Advanced Navigation System,Technology,All Models,210000,3,4.7,3
+58,AI Parking Assistant,Technology,Luxury Models,520000,6,4.9,4
+59,Night Vision Assist,Safety,Luxury Models,680000,7,4.8,4
+60,Automatic Emergency Braking,Safety,All Models,340000,5,4.9,4
+61,Rear Cross Traffic Alert,Safety,SUV;Sedan,230000,3,4.7,3
+62,Wireless Rear Camera,Safety,All Models,75000,1,4.5,2
+63,Premium Window Shades,Interior,SUV;Luxury Models,120000,2,4.4,2
+64,Massage Seats,Interior,Luxury Models,450000,6,4.9,4
+65,Suede Interior Finish,Interior,Sports,380000,5,4.7,3
+66,Carbon Fiber Interior Trim,Interior,Sports,310000,4,4.8,3
+67,Executive Rear Seating,Interior,Luxury Models,620000,8,4.9,5
+68,Mini Refrigerator,Interior,SUV;Luxury Models,280000,4,4.6,3
+69,Rear AC Climate Control,Interior,SUV;Sedan,170000,3,4.5,3
+70,Advanced Air Purifier,Interior,All Models,90000,2,4.6,2
+71,Smartphone App Control,Technology,All Models,140000,2,4.7,2
+72,Biometric Vehicle Access,Technology,Luxury Models,480000,5,4.8,3
+73,Digital Rear View Mirror,Technology,All Models,160000,2,4.7,3
+74,Automatic Parking System,Technology,SUV;Luxury Models,550000,6,4.9,4
+75,Solar Roof Panel,Technology,Electric Models,720000,8,4.8,5
+76,Battery Performance Upgrade,Performance,Electric Models,950000,10,4.9,5
+77,Fast Charging Module,Technology,Electric Models,430000,5,4.8,4
+78,Performance Tires,Performance,Sports,260000,3,4.7,2
+79,Offroad Suspension Kit,Performance,SUV,480000,7,4.8,3
+80,Roof Mounted Carrier,Exterior,SUV,130000,2,4.5,2
+81,Rear Bike Rack,Exterior,SUV,85000,2,4.4,2
+82,Side Body Graphics,Exterior,Sports,110000,2,4.5,2
+83,Matte Black Wrap,Exterior,All Models,420000,8,4.8,3
+84,Pearl White Wrap,Exterior,All Models,450000,8,4.7,3
+85,Chrome Delete Package,Exterior,Sports;SUV,190000,3,4.6,2
+86,Illuminated Door Sills,Interior,All Models,70000,1,4.5,2
+87,Premium Seat Covers,Interior,All Models,95000,2,4.4,2
+88,Custom Dashboard Trim,Interior,Sedan;Sports,180000,3,4.6,2
+89,Steering Heating System,Interior,Luxury Models,125000,2,4.5,2
+90,Rear Seat Heating,Interior,SUV;Luxury Models,170000,3,4.6,3
+91,Voice Command AI,Technology,All Models,260000,4,4.8,3
+92,AI Driver Assistance,Technology,Luxury Models,850000,9,4.9,5
+93,Traffic Sign Recognition,Safety,All Models,230000,3,4.7,3
+94,Driver Drowsiness Detection,Safety,All Models,210000,3,4.6,3
+95,Collision Warning System,Safety,All Models,350000,5,4.9,4
+96,Smart Tire Pressure Monitor,Safety,All Models,85000,1,4.5,2
+97,Electric Tailgate,SUV Features,SUV,210000,3,4.6,3
+98,Rear Sunshade Package,Interior,Sedan;Luxury Models,120000,2,4.4,2
+99,Premium Roof Lighting,Interior,All Models,95000,2,4.5,2
+100,Custom Exhaust Tips,Performance,Sports,145000,2,4.6,2
+101,Launch Control System,Performance,Sports,520000,6,4.9,3
+102,Track Mode Upgrade,Performance,Sports,680000,7,4.9,3
+103,Dynamic Suspension Control,Performance,Luxury Models,620000,8,4.8,4
+104,Electronic Differential Lock,Performance,SUV;Sports,470000,5,4.7,3
+105,Adaptive LED Fog Lamps,Lighting,All Models,125000,2,4.5,2
+106,Laser Headlight Upgrade,Lighting,Luxury Models,720000,7,4.9,4
+107,Interior Fragrance System,Interior,Luxury Models,85000,1,4.4,2
+108,Premium Cabin Insulation,Interior,All Models,210000,4,4.6,3
+109,Rear Wireless Charging,Technology,SUV;Luxury Models,95000,1,4.5,2
+110,Interactive Touch Controls,Technology,All Models,240000,3,4.7,3
+111,AI Voice Navigation,Technology,All Models,290000,4,4.8,3
+112,Cloud Connected Services,Technology,All Models,180000,2,4.6,2
+113,Smart Security Alarm,Safety,All Models,140000,2,4.5,2
+114,Remote Vehicle Tracking,Safety,All Models,220000,3,4.7,3
+115,Advanced Anti Theft System,Safety,All Models,310000,4,4.8,3
+116,Electric Running Boards,SUV Features,SUV,280000,4,4.7,3
+117,Roof LED Light Bar,Lighting,SUV,170000,3,4.6,2
+118,Offroad Skid Plate,Performance,SUV,240000,4,4.7,3
+119,Heavy Duty Tow Package,Performance,SUV,360000,5,4.8,3
+120,Rear Spoiler Carbon Edition,Exterior,Sports,390000,5,4.8,3
+121,Gold Accent Interior,Interior,Luxury Models,260000,4,4.5,2
+122,Luxury Curtain Package,Interior,Luxury Models,140000,2,4.4,2
+123,AI Climate Optimization,Technology,All Models,330000,5,4.8,3
+124,Gesture Control System,Technology,Luxury Models,410000,5,4.7,3
+125,Smart Glass Windows,Technology,Luxury Models,860000,9,4.9,5
+126,Rear Entertainment Tablet,Entertainment,SUV,290000,4,4.6,3
+127,Gaming Console Integration,Entertainment,SUV;Luxury Models,340000,5,4.7,3
+128,Premium Subwoofer Package,Entertainment,All Models,180000,3,4.8,2
+129,AI Sound Optimization,Entertainment,All Models,260000,4,4.7,3
+130,Dual Exhaust Performance Kit,Performance,Sports,480000,5,4.8,3
+131,Electric Performance Boost,Performance,Electric Models,780000,8,4.9,4
+132,Autonomous Driving Assist,Technology,Luxury Models,1200000,12,5.0,5
+133,Self Parking AI Module,Technology,Luxury Models,680000,7,4.9,4
+134,Premium Leather Dashboard,Interior,Luxury Models,320000,4,4.7,3
+135,3D Surround Camera,Safety,All Models,410000,5,4.8,3
+136,Emergency SOS System,Safety,All Models,150000,2,4.6,3
+137,Rear Occupant Alert,Safety,SUV;Sedan,130000,2,4.5,2
+138,Wireless Software Updates,Technology,Electric Models,250000,3,4.7,3
+139,Performance Steering Kit,Performance,Sports,370000,5,4.8,3
+140,Luxury Wood Trim,Interior,Luxury Models,280000,4,4.6,3
+141,Panoramic Glass Roof,Exterior,SUV;Luxury Models,650000,8,4.9,5
+142,Digital Key Access,Technology,All Models,160000,2,4.6,2
+143,Rear Cabin Cooler,Interior,SUV,145000,2,4.5,2
+144,Custom Racing Seats,Interior,Sports,420000,5,4.8,3
+145,Carbon Ceramic Brakes,Performance,Sports,980000,10,5.0,4
+146,Ultra Bright LED Cabin Lights,Lighting,All Models,85000,1,4.5,2
+147,Performance Cooling System,Performance,Sports,560000,6,4.8,3
+148,AI Route Optimization,Technology,Electric Models,310000,4,4.7,3
+149,Smart Energy Monitoring,Technology,Electric Models,220000,3,4.6,3
+150,Advanced Battery Cooling,Performance,Electric Models,640000,7,4.9,4

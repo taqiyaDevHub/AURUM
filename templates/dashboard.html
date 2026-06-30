@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+{% block title %}My Build — AURUM{% endblock %}
+{% block head %}
+<style>
+  .dash-wrap { padding: 3rem; }
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+  .full-width { grid-column: 1 / -1; }
+
+  /* Config Card */
+  .config-hero {
+    background: linear-gradient(135deg, rgba(108,63,255,0.15) 0%, rgba(0,212,255,0.05) 100%);
+    border: 1px solid var(--border-light);
+    border-radius: 20px; padding: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .config-hero::after {
+    content: ''; position: absolute; right: -40px; top: -40px;
+    width: 250px; height: 250px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(108,63,255,0.15), transparent 70%);
+    pointer-events: none;
+  }
+
+  .config-car-name { font-family: 'Orbitron', monospace; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.3rem; }
+  .config-sub { color: var(--text-muted); font-size: 0.88rem; letter-spacing: 0.05em; }
+
+  .spec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; }
+  @media(max-width:800px) { .spec-grid { grid-template-columns: repeat(2,1fr); } .dash-grid { grid-template-columns:1fr; } }
+
+  /* Mods list */
+  .mods-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  .mod-chip {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.8rem; border-radius: 20px;
+    background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
+    font-size: 0.8rem; color: var(--accent); margin: 0.3rem;
+  }
+
+  /* Recommendations */
+  .rec-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  .rec-item {
+    padding: 1rem 0; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 1rem;
+  }
+  .rec-item:last-child { border-bottom: none; }
+  .rec-num { font-family: 'Orbitron', monospace; font-size: 1.2rem; font-weight: 800; color: var(--primary-glow); flex-shrink: 0; }
+  .rec-text { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .rec-reason { font-size: 0.78rem; color: var(--text-muted); }
+  .confidence-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+  .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 2px; }
+
+  /* Similar users */
+  .similar-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.8rem; margin-top: 1rem; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+  .empty-state .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text); }
+  
+  /* Saved builds */
+  .saved-build-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem; background: rgba(255,255,255,0.03);
+    border-radius: 8px; border: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+  .saved-build-name { font-weight: 600; }
+  .saved-build-price { font-size: 0.75rem; color: var(--text-muted); }
+  .badge-active {
+    background: rgba(0,255,179,0.1);
+    color: var(--success);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+  <div class="fade-up" style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem">
+    <div>
+      <div class="section-eyebrow">My Build</div>
+      <h1 class="section-title" style="font-size:2.2rem; margin-top:0.5rem">Dashboard</h1>
+    </div>
+    <a href="/configure" class="btn btn-primary" style="margin-top:1rem">+ New Configuration</a>
+  </div>
+
+  <div id="no-config" style="display:none">
+    <div class="empty-state fade-up">
+      <div class="big-icon">🚗</div>
+      <h3>No Active Configuration</h3>
+      <p style="margin-bottom:1.5rem">Start configuring your dream car to see your build here.</p>
+      <a href="/configure" class="btn btn-primary">Start Configuring</a>
+    </div>
+  </div>
+
+  <div id="dash-content" style="display:none">
+    <!-- Config hero -->
+    <div class="config-hero fade-up delay-1 full-width" style="margin-top:2rem">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem">
+        <div>
+          <div class="config-car-name" id="d-name">—</div>
+          <div class="config-sub" id="d-sub">—</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:0.78rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em">Total Price</div>
+          <div class="price-tag" id="d-total">—</div>
+        </div>
+      </div>
+      <div class="spec-grid">
+        <div class="stat-box"><div class="stat-val" id="d-hp">—</div><div class="stat-lbl">Horsepower</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-mileage">—</div><div class="stat-lbl">Mileage</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-speed">—</div><div class="stat-lbl">Top Speed</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-seats">—</div><div class="stat-lbl">Seating</div></div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <!-- Modifications -->
+      <div class="mods-section fade-up delay-2">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem">
+          <h3 style="font-family:'Orbitron',monospace; font-size:0.85rem; font-weight:800; color:var(--accent)">MODIFICATIONS</h3>
+          <span class="badge badge-cyan" id="mod-count">0 added</span>
+        </div>
+        <div id="d-mods-chips">
+          <span style="color:var(--text-dim); font-size:0.85rem">No modifications added</span>
+        </div>
+        <div style="margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--border)">
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem">
+            <span>Base Price</span><span id="d-base-price" style="color:var(--text)">—</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted)">
+            <span>Mods Cost</span><span id="d-mods-cost" style="color:var(--text)">—</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem">
+          <a href="/configure?edit=true" class="btn btn-outline" style="flex:1; justify-content:center">✏ Edit</a>
+          <button onclick="saveCurrentConfig()" class="btn btn-success" style="flex:1; justify-content:center">💾 Save Build</button>
+          <button onclick="exportBuild()" class="btn btn-outline" style="flex:1; justify-content:center">📥 Export Build</button>
+        </div>
+      </div>
+
+      <!-- Price prediction -->
+      <div class="rec-card fade-up delay-3">
+        <h3 style="font-family:'Orbitron',monospace; font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:1.2rem">💰 AI PRICE PREDICTION</h3>
+        <div id="pred-content">
+          <div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted)">
+            <div class="spinner"></div>Loading prediction...
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="rec-card full-width fade-up delay-3">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem">
+          <h3 style="font-family:'Orbitron',monospace; font-size:0.85rem; font-weight:800; color:var(--accent)">🤖 AI RECOMMENDATIONS</h3>
+          <button onclick="window.loadRecommendations()" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.75rem">Refresh</button>
+        </div>
+        <div id="rec-list">
+          <div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted)"><div class="spinner"></div>Loading recommendations…</div>
+        </div>
+      </div>
+
+      <!-- Similar Users -->
+      <div class="rec-card full-width fade-up delay-4">
+        <h3 style="font-family:'Orbitron',monospace; font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:1rem">👥 SIMILAR USER PATTERNS</h3>
+        <div id="similar-content">
+          <div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted)"><div class="spinner"></div>Analyzing…</div>
+        </div>
+      </div>
+
+      <!-- Saved Builds -->
+      <div class="rec-card full-width fade-up delay-4">
+        <h3 style="font-family:'Orbitron',monospace; font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:1rem">📁 MY SAVED BUILDS</h3>
+        <div id="saved-configs-list">
+          <div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted)">
+            <div class="spinner"></div>Loading saved builds...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadDashboard() {
+    try {
+        const config = await window.apiFetch('/api/config');
+        
+        if (!config.car_model) { 
+            document.getElementById('no-config').style.display = 'block'; 
+            document.getElementById('dash-content').style.display = 'none';
+            return; 
+        }
+        
+        document.getElementById('no-config').style.display = 'none';
+        document.getElementById('dash-content').style.display = 'block';
+
+        document.getElementById('d-name').textContent = config.car_model || '—';
+        document.getElementById('d-sub').textContent = `${config.category || '—'} · ${config.engine_type || '—'} · ${config.color || '—'}`;
+        document.getElementById('d-total').textContent = `PKR ${config.total_price || 0}M`;
+        
+        if (config.specifications) {
+            document.getElementById('d-hp').textContent = (config.specifications.horsepower || '—') + ' HP';
+            document.getElementById('d-mileage').textContent = (config.specifications.mileage || '—') + ' kmpl';
+            document.getElementById('d-speed').textContent = (config.specifications.top_speed || '—') + ' km/h';
+            document.getElementById('d-seats').textContent = (config.specifications.seating || '—') + ' seats';
+        }
+        
+        document.getElementById('d-base-price').textContent = `PKR ${config.base_price || 0}M`;
+
+        const modCost = (config.modifications || []).reduce((s, m) => s + (m.price || 0), 0);
+        document.getElementById('d-mods-cost').textContent = `PKR ${modCost.toFixed(2)}M`;
+        document.getElementById('mod-count').textContent = `${(config.modifications || []).length} added`;
+
+        const chips = document.getElementById('d-mods-chips');
+        if ((config.modifications || []).length > 0) {
+            chips.innerHTML = config.modifications.map(m => `
+                <span class="mod-chip">
+                    <span>${m.name || '?'}</span>
+                    <span style="color:var(--gold); font-size:0.72rem">PKR ${(m.price || 0).toFixed(2)}M</span>
+                </span>`).join('');
+        } else {
+            chips.innerHTML = '<span style="color:var(--text-dim); font-size:0.85rem">No modifications added</span>';
+        }
+
+        await loadPrediction();
+        await loadRecommendations();
+        await loadSavedConfigs();
+        
+    } catch(error) {
+        console.error('Dashboard error:', error);
+        showToast('Error loading dashboard', 'error');
+    }
+}
+
+async function loadPrediction() {
+    const box = document.getElementById('pred-content');
+    if (!box) return;
+    
+    box.innerHTML = '<div style="display:flex;gap:0.5rem;align-items:center"><div class="spinner"></div>Updating prediction...</div>';
+  
+    try {
+        const res = await window.apiFetch('/api/predict_price', { method: 'POST', body: JSON.stringify({}) });
+        
+        if (res.error) { 
+            box.innerHTML = `<span style="color:var(--danger)">⚠ ${res.error}</span>`; 
+            return; 
+        }
+        
+        const diff = res.predicted - res.current;
+        const absDiff = Math.abs(diff);
+        
+        let status;
+        if (absDiff <= 0.5) {
+            status = { color: 'var(--success)', icon: '✓', text: 'Well within estimate', explanation: 'Spot on!' };
+        } else if (diff > 0) {
+            status = { color: 'var(--success)', icon: '💰', text: 'Great Value Deal', explanation: `You're saving PKR ${diff.toFixed(2)}M vs market` };
+        } else {
+            status = { color: 'var(--danger)', icon: '⚠', text: 'Above Market Average', explanation: `Market average is PKR ${res.predicted}M for this build` };
+        }
+        
+        const diffText = diff > 0 ? `-${diff.toFixed(2)}M (you save)` : `+${Math.abs(diff).toFixed(2)}M (you pay extra)`;
+            
+        box.innerHTML = `
+            <div style="margin-bottom:0.8rem">
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.2rem">Your Build Price</div>
+                <div style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text)">PKR ${res.current}M</div>
+            </div>
+            <div style="margin-bottom:0.8rem">
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.2rem">Market Average (AI Predicted)</div>
+                <div style="font-family:'Orbitron',monospace;font-size:1.4rem;color:var(--gold)">PKR ${res.predicted}M</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.5rem;padding:0.6rem;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid var(--border)">
+                <span style="color:${status.color}">${status.icon}</span>
+                <span style="font-size:0.82rem;color:${status.color}">${status.text}</span>
+                <span style="font-size:0.78rem;color:var(--text-muted);margin-left:auto">${diffText}</span>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--text-muted);text-align:center">
+                ${status.explanation}
+            </div>`;
+            
+    } catch (error) {
+        console.error('Prediction error:', error);
+        box.innerHTML = `<span style="color:var(--danger)">⚠ Failed to load prediction</span>`;
+    }
+}
+
+async function loadRecommendations() {
+    const recList = document.getElementById('rec-list');
+    if (!recList) return;
+    
+    recList.innerHTML = '<div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted)"><div class="spinner"></div>Updating recommendations...</div>';
+    
+    try {
+        const res = await window.apiFetch('/api/recommendations');
+        
+        if (res.error) { 
+            recList.innerHTML = `<span style="color:var(--danger)">⚠ ${res.error}</span>`; 
+            return; 
+        }
+ 
+        if (res.recommendations && res.recommendations.length > 0) {
+            recList.innerHTML = res.recommendations.map((r, i) => `
+                <div class="rec-item">
+                    <div class="rec-num">${String(i+1).padStart(2,'0')}</div>
+                    <div style="flex:1">
+                        <div class="rec-text">${r.recommendation || 'Suggestion'}</div>
+                        <div class="rec-reason">${r.reason || 'Based on similar users'}</div>
+                        <div class="confidence-bar"><div class="confidence-fill" style="width:${((r.confidence || 0.5)*100).toFixed(0)}%"></div></div>
+                        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.3rem">${((r.confidence || 0.5)*100).toFixed(0)}% match confidence</div>
+                    </div>
+                </div>`).join('');
+        } else {
+            recList.innerHTML = '<span style="color:var(--text-muted)">Add more options to get personalized recommendations.</span>';
+        }
+ 
+        if (res.similar) {
+            const s = res.similar;
+            const similarContent = document.getElementById('similar-content');
+            if (similarContent) {
+                if (s.popular_mods && s.popular_mods.length > 0) {
+                    let modsHtml = `<div style="margin-bottom:1rem">
+                        <div style="font-size:0.75rem; color:var(--accent); margin-bottom:0.5rem">🔥 POPULAR AMONG SIMILAR USERS</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:0.5rem">`;
+                    s.popular_mods.forEach(mod => {
+                        modsHtml += `<span class="badge badge-cyan" style="font-size:0.7rem">
+                            ${mod.name} (${mod.percentage}%)
+                        </span>`;
+                    });
+                    modsHtml += `</div></div>`;
+                    
+                    similarContent.innerHTML = `
+                        ${modsHtml}
+                        <div class="similar-grid">
+                            <div class="stat-box"><div class="stat-val">PKR ${s.avg_budget || '—'}M</div><div class="stat-lbl">Avg Budget</div></div>
+                            <div class="stat-box"><div class="stat-val">PKR ${s.avg_final_price || '—'}M</div><div class="stat-lbl">Avg Final Price</div></div>
+                            <div class="stat-box"><div class="stat-val">${s.total_users || 0}</div><div class="stat-lbl">Similar Users</div></div>
+                        </div>
+                        <div style="margin-top:0.8rem; font-size:0.7rem; color:var(--text-muted); text-align:center">
+                            Based on ${s.total_users || 0} users with same car type & engine
+                        </div>`;
+                } else {
+                    similarContent.innerHTML = `
+                        <div class="similar-grid">
+                            <div class="stat-box"><div class="stat-val" style="color:${(s.alloys||0)>0.5?'var(--success)':'var(--danger)'}">
+                                ${(s.alloys||0)>0.5?'✓ Yes':'✗ No'}</div><div class="stat-lbl">Alloy Wheels (${((s.alloys||0)*100).toFixed(0)}%)</div></div>
+                            <div class="stat-box"><div class="stat-val" style="color:${(s.sunroof||0)>0.5?'var(--success)':'var(--danger)'}">
+                                ${(s.sunroof||0)>0.5?'✓ Yes':'✗ No'}</div><div class="stat-lbl">Sunroof (${((s.sunroof||0)*100).toFixed(0)}%)</div></div>
+                            <div class="stat-box"><div class="stat-val" style="color:${(s.spoiler||0)>0.5?'var(--success)':'var(--danger)'}">
+                                ${(s.spoiler||0)>0.5?'✓ Yes':'✗ No'}</div><div class="stat-lbl">Spoiler (${((s.spoiler||0)*100).toFixed(0)}%)</div></div>
+                            <div class="stat-box"><div class="stat-val">${s.interior || '—'}</div><div class="stat-lbl">Interior Pref.</div></div>
+                            <div class="stat-box"><div class="stat-val">PKR ${s.avg_budget ? s.avg_budget.toFixed(1) : '—'}M</div><div class="stat-lbl">Avg Budget</div></div>
+                            <div class="stat-box"><div class="stat-val">PKR ${s.avg_final_price ? s.avg_final_price.toFixed(1) : '—'}M</div><div class="stat-lbl">Avg Final Price</div></div>
+                        </div>`;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Recommendations error:', error);
+        recList.innerHTML = `<span style="color:var(--danger)">⚠ Failed to load recommendations</span>`;
+    }
+}
+
+async function saveCurrentConfig() {
+    const res = await window.apiFetch('/api/save_config', { method: 'POST' });
+    if (res.success) {
+        showToast('✅ Build saved!');
+        await loadSavedConfigs();
+    } else {
+        showToast('❌ Failed to save', 'error');
+    }
+}
+
+async function loadSavedConfigs() {
+    const container = document.getElementById('saved-configs-list');
+    if (!container) return;
+    
+    const res = await window.apiFetch('/api/my_configs');
+    
+    if (!res.configs || res.configs.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); padding:1rem; text-align:center">No saved builds yet. Click "Save Build" to save your configuration.</div>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 0.5rem">
+            ${res.configs.map(c => `
+                <div class="saved-build-item">
+                    <div>
+                        <div class="saved-build-name">${c.name}</div>
+                        <div class="saved-build-price">PKR ${c.total_price}M</div>
+                    </div>
+                    <div>
+                        ${c.is_active ? '<span class="badge-active">Active</span>' : 
+                          `<button onclick="switchToConfig(${c.id})" class="btn btn-outline" style="padding:0.3rem 0.8rem; font-size:0.7rem">Load</button>`}
+                        <button onclick="deleteConfig(${c.id})" class="btn btn-danger" style="padding:0.3rem 0.8rem; font-size:0.7rem; margin-left:0.3rem">🗑️</button>
+                    </div>
+                </div>
+            `).join('')}
+            <button onclick="createNewConfig()" class="btn btn-primary" style="margin-top:0.5rem">+ New Build</button>
+        </div>
+    `;
+}
+
+async function switchToConfig(configId) {
+    const res = await window.apiFetch(`/api/switch_config/${configId}`, { method: 'POST' });
+    if (res.success) {
+        showToast('✅ Switched to saved build');
+        window.location.reload();
+    } else {
+        showToast('❌ Failed to switch', 'error');
+    }
+}
+
+async function createNewConfig() {
+    const res = await window.apiFetch('/api/new_config', { method: 'POST' });
+    if (res.success) {
+        showToast('✅ New build created');
+        window.location.href = '/configure';
+    } else {
+        showToast('❌ Failed to create', 'error');
+    }
+}
+
+async function deleteConfig(configId) {
+    if (!confirm('Are you sure you want to delete this build?')) {
+        return;
+    }
+    
+    const res = await window.apiFetch(`/api/delete_config/${configId}`, { 
+        method: 'DELETE' 
+    });
+    
+    if (res.success) {
+        showToast('✅ Build deleted');
+        
+        const configsRes = await window.apiFetch('/api/my_configs');
+        if (!configsRes.configs || configsRes.configs.length === 0) {
+            window.location.reload();
+        } else {
+            await loadSavedConfigs();
+            await loadDashboard();
+        }
+    } else {
+        showToast('❌ Failed to delete', 'error');
+    }
+}
+
+async function exportBuild() {
+    const config = await window.apiFetch('/api/config');
+    if (!config.car_model) {
+        showToast('No active configuration', 'error');
+        return;
+    }
+    
+    // Build the export text
+    let exportText = "========================================\n";
+    exportText += "AURUM - MY CAR BUILD\n";
+    exportText += "========================================\n\n";
+    
+    exportText += `Car Model: ${config.car_model}\n`;
+    exportText += `Category: ${config.category}\n`;
+    exportText += `Engine: ${config.engine_type}\n`;
+    exportText += `Color: ${config.color}\n`;
+    exportText += `Total Price: PKR ${config.total_price}M\n\n`;
+    
+    exportText += "SPECIFICATIONS:\n";
+    if (config.specifications) {
+        exportText += `  Horsepower: ${config.specifications.horsepower} HP\n`;
+        exportText += `  Mileage: ${config.specifications.mileage} kmpl\n`;
+        exportText += `  Top Speed: ${config.specifications.top_speed} km/h\n`;
+        exportText += `  Seating: ${config.specifications.seating} seats\n`;
+    }
+    
+    exportText += "\nMODIFICATIONS:\n";
+    if (config.modifications && config.modifications.length > 0) {
+        config.modifications.forEach(mod => {
+            exportText += `  ✓ ${mod.name} - PKR ${mod.price}M\n`;
+        });
+    } else {
+        exportText += "  No modifications added\n";
+    }
+    
+    exportText += "\n========================================\n";
+    exportText += `Generated by AURUM Car Configurator\n`;
+    exportText += `Date: ${new Date().toLocaleDateString()}\n`;
+    
+    // Download as text file
+    const blob = new Blob([exportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aurum_build_${config.car_model.replace(/\s/g, '_')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('✅ Build exported successfully!');
+}
+
+window.loadPrediction = loadPrediction;
+window.loadRecommendations = loadRecommendations;
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboard();
+});
+</script>
+{% endblock %}

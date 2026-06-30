@@ -1,0 +1,151 @@
+s_no,car_model,category,engine_type,horsepower,mileage_kmpl,top_speed_kmph,seating_capacity,base_price_million_pkr
+1,Sedan X,Sedan,Petrol,180,14,220,5,5.0
+2,Sedan X Hybrid,Sedan,Hybrid,190,18,225,5,5.8
+3,Sedan X Electric,Sedan,Electric,210,22,230,5,6.5
+4,SUV Z,SUV,Diesel,250,10,240,7,8.0
+5,SUV Z Hybrid,SUV,Hybrid,260,13,245,7,8.8
+6,SUV Z Electric,SUV,Electric,290,16,250,7,10.5
+7,Sport GT,Sports,Petrol,420,8,320,2,12.0
+8,Sport GT Hybrid,Sports,Hybrid,450,10,330,2,13.5
+9,Sport GT Electric,Sports,Electric,500,14,340,2,15.0
+10,City Compact,Sedan,Petrol,140,16,200,5,4.2
+11,City Compact Hybrid,Sedan,Hybrid,155,20,205,5,4.9
+12,Luxury Cruiser,SUV,Petrol,310,9,260,7,11.0
+13,Luxury Cruiser Hybrid,SUV,Hybrid,330,12,265,7,12.2
+14,Eco EV,Sedan,Electric,170,25,210,5,5.7
+15,Thunder RS,Sports,Petrol,480,7,345,2,14.5
+16,Thunder RS Electric,Sports,Electric,530,12,355,2,16.8
+17,Urban SUV,SUV,Petrol,220,11,235,5,7.2
+18,Urban SUV Hybrid,SUV,Hybrid,240,15,240,5,8.1
+19,Executive Sedan,Sedan,Petrol,200,15,225,5,6.3
+20,Executive Sedan Hybrid,Sedan,Hybrid,215,19,230,5,7.0
+21,Executive Sedan Electric,Sedan,Electric,240,24,235,5,7.8
+22,Ranger SUV,SUV,Diesel,270,11,245,7,8.9
+23,Ranger SUV Hybrid,SUV,Hybrid,285,14,250,7,9.8
+24,Ranger SUV Electric,SUV,Electric,320,18,255,7,11.5
+25,Velocity GT,Sports,Petrol,450,8,335,2,13.8
+26,Velocity GT Hybrid,Sports,Hybrid,470,10,340,2,14.9
+27,Velocity GT Electric,Sports,Electric,520,13,350,2,16.5
+28,Metro Sedan,Sedan,Petrol,160,17,210,5,4.8
+29,Metro Sedan Hybrid,Sedan,Hybrid,175,21,215,5,5.5
+30,Metro Sedan Electric,Sedan,Electric,195,26,220,5,6.2
+31,Grand SUV,SUV,Petrol,300,10,255,7,10.8
+32,Grand SUV Hybrid,SUV,Hybrid,320,13,260,7,11.9
+33,Grand SUV Electric,SUV,Electric,350,17,270,7,13.5
+34,Blaze RS,Sports,Petrol,490,7,348,2,15.2
+35,Blaze RS Hybrid,Sports,Hybrid,510,9,352,2,16.0
+36,Blaze RS Electric,Sports,Electric,560,12,360,2,17.8
+37,Compact One,Sedan,Petrol,145,18,198,5,4.0
+38,Compact One Hybrid,Sedan,Hybrid,158,22,202,5,4.7
+39,Compact One Electric,Sedan,Electric,180,27,208,5,5.4
+40,Titan SUV,SUV,Diesel,280,10,248,7,9.4
+41,Titan SUV Hybrid,SUV,Hybrid,295,13,252,7,10.3
+42,Titan SUV Electric,SUV,Electric,330,17,260,7,12.1
+43,Phantom GT,Sports,Petrol,500,6,350,2,16.0
+44,Phantom GT Hybrid,Sports,Hybrid,525,8,355,2,17.2
+45,Phantom GT Electric,Sports,Electric,580,11,365,2,18.9
+46,Elite Sedan,Sedan,Petrol,190,15,223,5,5.9
+47,Elite Sedan Hybrid,Sedan,Hybrid,205,19,228,5,6.6
+48,Elite Sedan Electric,Sedan,Electric,225,24,232,5,7.4
+49,Adventure SUV,SUV,Petrol,260,11,242,7,8.5
+50,Adventure SUV Hybrid,SUV,Hybrid,278,14,247,7,9.3
+51,Adventure SUV Electric,SUV,Electric,310,18,252,7,11.0
+52,Rocket X,Sports,Petrol,470,7,342,2,14.8
+53,Rocket X Hybrid,Sports,Hybrid,490,9,347,2,15.9
+54,Rocket X Electric,Sports,Electric,545,12,358,2,17.1
+55,Urban Lite,Sedan,Petrol,150,17,205,5,4.4
+56,Urban Lite Hybrid,Sedan,Hybrid,165,21,210,5,5.1
+57,Urban Lite Electric,Sedan,Electric,185,26,215,5,5.9
+58,Max SUV,SUV,Diesel,275,10,246,7,9.1
+59,Max SUV Hybrid,SUV,Hybrid,292,13,251,7,10.0
+60,Max SUV Electric,SUV,Electric,325,17,258,7,11.7
+61,Inferno GT,Sports,Petrol,510,6,352,2,16.3
+62,Inferno GT Hybrid,Sports,Hybrid,535,8,357,2,17.5
+63,Inferno GT Electric,Sports,Electric,590,11,368,2,19.2
+64,Prime Sedan,Sedan,Petrol,185,15,222,5,5.7
+65,Prime Sedan Hybrid,Sedan,Hybrid,200,19,227,5,6.4
+66,Prime Sedan Electric,Sedan,Electric,220,24,231,5,7.1
+67,Cross SUV,SUV,Petrol,255,11,241,7,8.3
+68,Cross SUV Hybrid,SUV,Hybrid,272,14,246,7,9.0
+69,Cross SUV Electric,SUV,Electric,305,18,251,7,10.8
+70,Turbo S,Sports,Petrol,495,7,346,2,15.5
+71,Turbo S Hybrid,Sports,Hybrid,518,9,351,2,16.7
+72,Turbo S Electric,Sports,Electric,570,12,362,2,18.4
+73,Neo Sedan,Sedan,Petrol,170,16,215,5,5.1
+74,Neo Sedan Hybrid,Sedan,Hybrid,185,20,220,5,5.8
+75,Neo Sedan Electric,Sedan,Electric,205,25,225,5,6.6
+76,Explorer SUV,SUV,Diesel,285,10,249,7,9.6
+77,Explorer SUV Hybrid,SUV,Hybrid,300,13,254,7,10.5
+78,Explorer SUV Electric,SUV,Electric,335,17,262,7,12.3
+79,Falcon GT,Sports,Petrol,505,6,351,2,16.1
+80,Falcon GT Hybrid,Sports,Hybrid,528,8,356,2,17.0
+81,Falcon GT Electric,Sports,Electric,585,11,366,2,18.8
+82,Vision Sedan,Sedan,Petrol,175,16,218,5,5.3
+83,Vision Sedan Hybrid,Sedan,Hybrid,190,20,223,5,6.0
+84,Vision Sedan Electric,Sedan,Electric,210,25,228,5,6.8
+85,Power SUV,SUV,Petrol,265,11,243,7,8.7
+86,Power SUV Hybrid,SUV,Hybrid,282,14,248,7,9.5
+87,Power SUV Electric,SUV,Electric,315,18,253,7,11.2
+88,Storm GT,Sports,Petrol,515,6,353,2,16.4
+89,Storm GT Hybrid,Sports,Hybrid,540,8,358,2,17.6
+90,Storm GT Electric,Sports,Electric,595,11,369,2,19.4
+91,Classic Sedan,Sedan,Petrol,165,17,212,5,4.9
+92,Classic Sedan Hybrid,Sedan,Hybrid,180,21,217,5,5.6
+93,Classic Sedan Electric,Sedan,Electric,200,26,222,5,6.3
+94,Trail SUV,SUV,Diesel,290,10,250,7,9.8
+95,Trail SUV Hybrid,SUV,Hybrid,305,13,255,7,10.7
+96,Trail SUV Electric,SUV,Electric,340,17,263,7,12.5
+97,Venom GT,Sports,Petrol,520,6,355,2,16.6
+98,Venom GT Hybrid,Sports,Hybrid,545,8,360,2,17.8
+99,Venom GT Electric,Sports,Electric,600,11,370,2,19.6
+100,Dynamic Sedan,Sedan,Petrol,178,16,219,5,5.4
+101,Dynamic Sedan Hybrid,Sedan,Hybrid,193,20,224,5,6.1
+102,Dynamic Sedan Electric,Sedan,Electric,213,25,229,5,6.9
+103,Ultra SUV,SUV,Petrol,270,11,244,7,8.9
+104,Ultra SUV Hybrid,SUV,Hybrid,287,14,249,7,9.7
+105,Ultra SUV Electric,SUV,Electric,320,18,254,7,11.4
+106,Omega GT,Sports,Petrol,525,6,356,2,16.8
+107,Omega GT Hybrid,Sports,Hybrid,550,8,361,2,18.0
+108,Omega GT Electric,Sports,Electric,605,11,372,2,19.8
+109,Future Sedan,Sedan,Petrol,182,15,221,5,5.6
+110,Future Sedan Hybrid,Sedan,Hybrid,197,19,226,5,6.3
+111,Future Sedan Electric,Sedan,Electric,217,24,231,5,7.0
+112,Beast SUV,SUV,Diesel,295,10,251,7,10.0
+113,Beast SUV Hybrid,SUV,Hybrid,310,13,256,7,10.9
+114,Beast SUV Electric,SUV,Electric,345,17,264,7,12.7
+115,Hunter GT,Sports,Petrol,530,6,357,2,17.0
+116,Hunter GT Hybrid,Sports,Hybrid,555,8,362,2,18.2
+117,Hunter GT Electric,Sports,Electric,610,11,373,2,20.0
+118,Smart Sedan,Sedan,Petrol,168,17,214,5,5.0
+119,Smart Sedan Hybrid,Sedan,Hybrid,183,21,219,5,5.7
+120,Smart Sedan Electric,Sedan,Electric,203,26,224,5,6.5
+121,Peak SUV,SUV,Petrol,275,11,245,7,9.0
+122,Peak SUV Hybrid,SUV,Hybrid,290,14,250,7,9.9
+123,Peak SUV Electric,SUV,Electric,325,18,255,7,11.6
+124,Shadow GT,Sports,Petrol,535,6,358,2,17.2
+125,Shadow GT Hybrid,Sports,Hybrid,560,8,363,2,18.4
+126,Shadow GT Electric,Sports,Electric,615,11,374,2,20.2
+127,Crystal Sedan,Sedan,Petrol,185,15,222,5,5.8
+128,Crystal Sedan Hybrid,Sedan,Hybrid,200,19,227,5,6.5
+129,Crystal Sedan Electric,Sedan,Electric,220,24,232,5,7.3
+130,Master SUV,SUV,Diesel,300,10,252,7,10.2
+131,Master SUV Hybrid,SUV,Hybrid,315,13,257,7,11.1
+132,Master SUV Electric,SUV,Electric,350,17,265,7,12.9
+133,Blizzard GT,Sports,Petrol,540,6,359,2,17.4
+134,Blizzard GT Hybrid,Sports,Hybrid,565,8,364,2,18.6
+135,Blizzard GT Electric,Sports,Electric,620,11,375,2,20.4
+136,Next Sedan,Sedan,Petrol,188,15,223,5,5.9
+137,Next Sedan Hybrid,Sedan,Hybrid,203,19,228,5,6.6
+138,Next Sedan Electric,Sedan,Electric,223,24,233,5,7.4
+139,Force SUV,SUV,Petrol,280,11,246,7,9.2
+140,Force SUV Hybrid,SUV,Hybrid,295,14,251,7,10.1
+141,Force SUV Electric,SUV,Electric,330,18,256,7,11.8
+142,Drift GT,Sports,Petrol,545,6,360,2,17.6
+143,Drift GT Hybrid,Sports,Hybrid,570,8,365,2,18.8
+144,Drift GT Electric,Sports,Electric,625,11,376,2,20.6
+145,Advance Sedan,Sedan,Petrol,190,15,224,5,6.0
+146,Advance Sedan Hybrid,Sedan,Hybrid,205,19,229,5,6.7
+147,Advance Sedan Electric,Sedan,Electric,225,24,234,5,7.5
+148,King SUV,SUV,Diesel,305,10,253,7,10.4
+149,King SUV Hybrid,SUV,Hybrid,320,13,258,7,11.3
+150,King SUV Electric,SUV,Electric,355,17,266,7,13.1

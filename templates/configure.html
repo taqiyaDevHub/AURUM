@@ -1,0 +1,613 @@
+{% extends "base.html" %}
+{% block title %}Configure — AURUM{% endblock %}
+{% block head %}
+<style>
+  .configure-wrap { padding: 3rem; }
+
+  /* ── Stepper ── */
+  .stepper {
+    display: flex; align-items: center; gap: 0; margin-bottom: 3rem;
+  }
+  .step-item {
+    display: flex; align-items: center; gap: 0.8rem; flex: 1;
+  }
+  .step-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-size: 0.8rem; font-weight: 800;
+    border: 2px solid var(--border); color: var(--text-muted);
+    transition: all 0.3s; flex-shrink: 0;
+    background: var(--bg-card);
+  }
+  .step-num.active { border-color: var(--primary-glow); color: var(--primary-glow); box-shadow: 0 0 15px rgba(108,63,255,0.4); }
+  .step-num.done { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .step-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); transition: color 0.3s; }
+  .step-item.active .step-label, .step-item.done .step-label { color: var(--text); }
+  .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 0.5rem; }
+  .step-line.done { background: var(--primary); }
+
+  /* ── Panels ── */
+  .step-panel { display: none; animation: fadeUp 0.4s ease forwards; }
+  .step-panel.active { display: block; }
+
+  /* ── Category Selector ── */
+  .category-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+    max-width: 750px;
+  }
+  .category-card {
+    padding: 2rem 1.5rem; border-radius: 16px;
+    background: var(--bg-card); border: 2px solid var(--border);
+    cursor: pointer; transition: all 0.25s; text-align: center;
+  }
+  .category-card:hover { border-color: var(--border-light); transform: translateY(-3px); }
+  .category-card.selected { border-color: var(--primary-glow); background: rgba(108,63,255,0.1); box-shadow: 0 0 30px rgba(108,63,255,0.2); }
+  .cat-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
+  .cat-name { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .cat-desc { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ── Model / Engine picker ── */
+  .picker-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem; max-width: 900px; margin-top: 1.5rem;
+  }
+  .picker-card {
+    padding: 1.2rem 1.4rem; border-radius: 12px;
+    background: var(--bg-card); border: 2px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .picker-card:hover { border-color: var(--border-light); }
+  .picker-card.selected { border-color: var(--accent); background: rgba(0,212,255,0.06); }
+  .picker-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .picker-meta { font-size: 0.78rem; color: var(--text-muted); }
+
+  /* ── Color Picker ── */
+  .color-grid { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; max-width: 500px; }
+  .color-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 3px solid transparent; cursor: pointer;
+    transition: all 0.2s; position: relative;
+  }
+  .color-btn.selected { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 16px rgba(255,255,255,0.3); }
+  .color-btn::after {
+    content: attr(data-color); position: absolute; bottom: -20px;
+    left: 50%; transform: translateX(-50%);
+    font-size: 0.65rem; color: var(--text-muted);
+    white-space: nowrap; opacity: 0; transition: opacity 0.2s;
+  }
+  .color-btn:hover::after { opacity: 1; }
+
+  /* ── Mods Layout ── */
+  .mods-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; align-items: start; }
+  .mod-list { display: flex; flex-direction: column; gap: 0; }
+  .mod-category-header {
+    padding: 0.6rem 1rem;
+    background: rgba(108,63,255,0.1); border: 1px solid var(--border);
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--accent); margin-top: 1rem; border-radius: 6px;
+  }
+  .mod-category-header:first-child { margin-top: 0; }
+  .mod-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 1rem; border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    transition: background 0.2s; cursor: pointer;
+  }
+  .mod-item:hover { background: rgba(108,63,255,0.06); }
+  .mod-item.added { background: rgba(0,212,255,0.05); }
+  .mod-name { font-size: 0.88rem; font-weight: 600; }
+  .mod-price { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--gold); }
+  .mod-stars { color: #ffd700; font-size: 0.75rem; }
+  .mod-add-btn {
+    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent); border-radius: 6px; padding: 0.3rem 0.7rem;
+    font-size: 0.75rem; font-family: 'Syne', sans-serif; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .mod-add-btn:hover { background: rgba(0,212,255,0.2); }
+  .mod-add-btn.added { background: rgba(255,79,109,0.1); border-color: rgba(255,79,109,0.3); color: var(--danger); }
+
+  /* ── Summary Panel ── */
+  .summary-panel {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem; position: sticky; top: 90px;
+  }
+  .summary-title { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 1.2rem; color: var(--accent); }
+  .summary-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .summary-row:last-of-type { border-bottom: none; }
+  .summary-lbl { font-size: 0.8rem; color: var(--text-muted); }
+  .summary-val { font-size: 0.85rem; font-weight: 600; text-align: right; max-width: 55%; }
+  .summary-mods { list-style: none; margin-top: 0.5rem; }
+  .summary-mods li {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem; color: var(--text-muted); padding: 0.3rem 0;
+    border-bottom: 1px dashed rgba(108,63,255,0.1);
+  }
+  .remove-mod { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.9rem; }
+  .total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);
+  }
+  .total-lbl { font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+  .total-price { font-family: 'Orbitron', monospace; font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, var(--gold), #ffb347); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* Step nav */
+  .step-nav { display: flex; gap: 1rem; margin-top: 2rem; }
+
+  label { display: block; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.5rem; }
+  .form-group { margin-bottom: 1.5rem; max-width: 400px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="configure-wrap">
+  <div class="fade-up">
+    <div class="section-eyebrow">Build Studio</div>
+    <h1 class="section-title" style="font-size:2.2rem; margin-top:0.5rem; margin-bottom:2rem">Configure Your Car</h1>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper fade-up delay-1" id="stepper">
+    <div class="step-item active" id="step-dot-1">
+      <div class="step-num active" id="snum-1">1</div>
+      <div class="step-label">Category</div>
+    </div>
+    <div class="step-line" id="sl-1"></div>
+    <div class="step-item" id="step-dot-2">
+      <div class="step-num" id="snum-2">2</div>
+      <div class="step-label">Model</div>
+    </div>
+    <div class="step-line" id="sl-2"></div>
+    <div class="step-item" id="step-dot-3">
+      <div class="step-num" id="snum-3">3</div>
+      <div class="step-label">Color</div>
+    </div>
+    <div class="step-line" id="sl-3"></div>
+    <div class="step-item" id="step-dot-4">
+      <div class="step-num" id="snum-4">4</div>
+      <div class="step-label">Modifications</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Category -->
+  <div class="step-panel active" id="panel-1">
+    <h3 style="margin-bottom:1.5rem; font-size:1rem; color:var(--text-muted)">Select a vehicle category to get started</h3>
+    <div class="category-grid">
+      {% for cat in categories %}
+      <div class="category-card" onclick="selectCategory('{{ cat }}', this)">
+        <span class="cat-icon">{% if cat == 'Sedan' %}🚗{% elif cat == 'SUV' %}🚙{% else %}🏎️{% endif %}</span>
+        <div class="cat-name">{{ cat }}</div>
+        <div class="cat-desc">{% if cat == 'Sedan' %}Elegant daily drivers{% elif cat == 'SUV' %}Powerful and spacious{% else %}Pure performance{% endif %}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-primary" onclick="goStep(2)" id="btn-step2" disabled>Next: Choose Model →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Model + Engine -->
+  <div class="step-panel" id="panel-2">
+    <h3 style="margin-bottom:0.5rem; font-size:1rem; color:var(--text-muted)">Choose your model</h3>
+    <div class="picker-grid" id="model-picker"></div>
+
+    <div style="margin-top:2rem" id="engine-section" style="display:none">
+      <h3 style="margin-bottom:0.5rem; font-size:1rem; color:var(--text-muted)">Select engine type</h3>
+      <div class="picker-grid" id="engine-picker"></div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(3)" id="btn-step3" disabled>Next: Pick Color →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Color -->
+  <div class="step-panel" id="panel-3">
+    <h3 style="margin-bottom:1rem; font-size:1rem; color:var(--text-muted)">Choose exterior color</h3>
+    <div class="color-grid" id="color-grid">
+      {% set color_map = {
+        'White': '#f0f0f0', 'Black': '#1a1a2e', 'Silver': '#c0c0c0',
+        'Blue': '#1e40af', 'Red': '#dc2626', 'Grey': '#6b7280',
+        'Green': '#16a34a', 'Orange': '#ea580c', 'Pearl': '#f0e6d3',
+        'Midnight Blue': '#1e3a5f', 'Graphite': '#374151'
+      } %}
+      {% for color in colors %}
+      {% set hex = color_map.get(color, '#888') %}
+      <div class="color-btn" data-color="{{ color }}" style="background:{{ hex }}"
+           onclick="selectColor('{{ color }}', this)"></div>
+      {% endfor %}
+    </div>
+    <div style="margin-top:1.5rem; font-size:0.9rem; color:var(--text-muted)">
+      Selected: <span id="selected-color-label" style="color:var(--text); font-weight:700">—</span>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="confirmCarAndGoMods()" id="btn-step4" disabled>Next: Add Mods →</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Modifications -->
+  <div class="step-panel" id="panel-4">
+    <div class="mods-layout">
+      <div>
+        <h3 style="margin-bottom:1rem; font-size:1rem; color:var(--text-muted)">Compatible modifications for your build</h3>
+        <div class="mod-list" id="mod-list">
+          <div style="display:flex;align-items:center;gap:1rem;color:var(--text-muted)">
+            <div class="spinner"></div> Loading modifications…
+          </div>
+        </div>
+      </div>
+      <div class="summary-panel">
+        <div class="summary-title">⚙ Your Build</div>
+        <div class="summary-row"><span class="summary-lbl">Model</span><span class="summary-val" id="s-model">—</span></div>
+        <div class="summary-row"><span class="summary-lbl">Category</span><span class="summary-val" id="s-cat">—</span></div>
+        <div class="summary-row"><span class="summary-lbl">Engine</span><span class="summary-val" id="s-engine">—</span></div>
+        <div class="summary-row"><span class="summary-lbl">Color</span><span class="summary-val" id="s-color">—</span></div>
+        <div class="summary-row"><span class="summary-lbl">HP / Top Speed</span><span class="summary-val" id="s-specs">—</span></div>
+        <div class="summary-row"><span class="summary-lbl">Base Price</span><span class="summary-val" id="s-base">—</span></div>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-muted); margin-top:0.8rem; margin-bottom:0.4rem">MODIFICATIONS</div>
+          <ul class="summary-mods" id="s-mods"><li style="color:var(--text-dim)">None added yet</li></ul>
+        </div>
+        <div class="total-row">
+          <span class="total-lbl">Total</span>
+          <span class="total-price" id="s-total">—</span>
+        </div>
+        <div style="margin-top:1.2rem; display:flex; flex-direction:column; gap:0.6rem;">
+          <a href="/dashboard" class="btn btn-primary" style="justify-content:center">View Full Dashboard →</a>
+          <button onclick="getPricePrediction()" class="btn btn-outline" style="justify-content:center">🤖 AI Price Prediction</button>
+        </div>
+        <div id="price-pred" style="margin-top:0.8rem; display:none; padding:0.8rem; background:rgba(108,63,255,0.08); border:1px solid rgba(108,63,255,0.2); border-radius:8px; font-size:0.82rem; color:var(--text-muted)"></div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-outline" onclick="goStep(3)">← Back</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let state = { category: null, model: null, engine: null, color: null };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('category')) {
+    state.category = urlParams.get('category');
+    document.querySelector(`[onclick="selectCategory('${state.category}', this)"]`)?.click();
+  }
+
+  function selectCategory(cat, el) {
+    document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.category = cat;
+    document.getElementById('btn-step2').disabled = false;
+  }
+
+  async function goStep(n) {
+    if (n === 2) await loadModels();
+    updateStepper(n);
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`panel-${n}`).classList.add('active');
+  }
+
+  function updateStepper(activeStep) {
+    for (let i = 1; i <= 4; i++) {
+      const num = document.getElementById(`snum-${i}`);
+      const dot = document.getElementById(`step-dot-${i}`);
+      if (i < activeStep) { num.className = 'step-num done'; num.textContent = '✓'; dot.className = 'step-item done'; }
+      else if (i === activeStep) { num.className = 'step-num active'; num.textContent = i; dot.className = 'step-item active'; }
+      else { num.className = 'step-num'; num.textContent = i; dot.className = 'step-item'; }
+      if (i < 4) {
+        const line = document.getElementById(`sl-${i}`);
+        line.className = i < activeStep ? 'step-line done' : 'step-line';
+      }
+    }
+  }
+
+  async function loadModels() {
+    const data = await window.apiFetch(`/api/cars/${state.category}`);
+    const unique = [...new Map(data.map(c => [c.car_model.split(' ').slice(0,-1).join(' ') || c.car_model, c])).values()];
+    // Group by base name
+    const groups = {};
+    data.forEach(c => {
+      const base = c.car_model.split(' ')[0];
+      if (!groups[c.car_model.replace(/ (Hybrid|Electric|Diesel)$/, '').trim()]) {
+        groups[c.car_model.replace(/ (Hybrid|Electric|Diesel)$/, '').trim()] = [];
+      }
+      groups[c.car_model.replace(/ (Hybrid|Electric|Diesel)$/, '').trim()].push(c);
+    });
+
+    const modelPicker = document.getElementById('model-picker');
+    const allModels = [...new Set(data.map(c => c.car_model.replace(/ (Hybrid|Electric|Diesel)$/, '').trim()))];
+    modelPicker.innerHTML = allModels.map(m => `
+      <div class="picker-card" onclick="selectModel('${m}', this)" data-model="${m}">
+        <div class="picker-name">${m}</div>
+        <div class="picker-meta">${state.category} · ${data.filter(c=>c.car_model.startsWith(m)).length} variants</div>
+      </div>`).join('');
+
+    if (urlParams.get('model')) {
+      const m = decodeURIComponent(urlParams.get('model')).replace(/ (Hybrid|Electric|Diesel)$/, '').trim();
+      const el = modelPicker.querySelector(`[data-model="${m}"]`);
+      if (el) { selectModel(m, el); }
+    }
+  }
+
+  async function selectModel(model, el) {
+    document.querySelectorAll('#model-picker .picker-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.model = model;
+    const data = await window.apiFetch(`/api/cars/${state.category}`);
+    const variants = data.filter(c => c.car_model.includes(model));
+    const enginePicker = document.getElementById('engine-picker');
+    enginePicker.innerHTML = variants.map(v => `
+      <div class="picker-card" onclick="selectEngine('${v.engine_type}', '${v.car_model}', this)" data-engine="${v.engine_type}">
+        <div class="picker-name">${v.engine_type}</div>
+        <div class="picker-meta">${v.horsepower} HP · ${v.mileage_kmpl} kmpl · PKR ${v.base_price_million_pkr}M</div>
+      </div>`).join('');
+    document.getElementById('engine-section').style.display = 'block';
+    if (urlParams.get('engine')) {
+      const eEl = enginePicker.querySelector(`[data-engine="${urlParams.get('engine')}"]`);
+      if (eEl) eEl.click();
+    }
+  }
+
+  function selectEngine(engine, fullModel, el) {
+    document.querySelectorAll('#engine-picker .picker-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.engine = engine;
+    state.fullModel = fullModel;
+    document.getElementById('btn-step3').disabled = false;
+  }
+
+  function selectColor(color, el) {
+    document.querySelectorAll('.color-btn').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.color = color;
+    document.getElementById('selected-color-label').textContent = color;
+    document.getElementById('btn-step4').disabled = false;
+  }
+
+  async function confirmCarAndGoMods() {
+    const res = await window.apiFetch('/api/select_car', {
+      method: 'POST',
+      body: JSON.stringify({ car_model: state.fullModel, color: state.color, engine_type: state.engine })
+    });
+    if (res.success) {
+      showToast('✅ Build started!');
+      updateSummary(res.config);
+      await loadMods();
+      goStep(4);
+    } else {
+      showToast(res.error, 'error');
+    }
+  }
+
+  function updateSummary(config) {
+    if (!config.car_model) return;
+    document.getElementById('s-model').textContent = config.car_model;
+    document.getElementById('s-cat').textContent = config.category;
+    document.getElementById('s-engine').textContent = config.engine_type;
+    document.getElementById('s-color').textContent = config.color;
+    document.getElementById('s-specs').textContent = `${config.specifications?.horsepower} HP / ${config.specifications?.top_speed} kmph`;
+    document.getElementById('s-base').textContent = `PKR ${config.base_price}M`;
+    document.getElementById('s-total').textContent = `${config.total_price}M`;
+    renderModsList(config.modifications || []);
+  }
+
+  function renderModsList(mods) {
+    const ul = document.getElementById('s-mods');
+    if (!mods.length) { ul.innerHTML = '<li style="color:var(--text-dim)">None added yet</li>'; return; }
+    ul.innerHTML = mods.map(m => `
+      <li>
+        <span>${m.name}</span>
+        <span style="display:flex;align-items:center;gap:0.5rem">
+          <span style="color:var(--gold); font-family:'Space Mono',monospace; font-size:0.75rem">+PKR ${m.price}M</span>
+          <button class="remove-mod" onclick="removeMod('${m.name}')">✕</button>
+        </span>
+      </li>`).join('');
+  }
+
+  async function loadMods() {
+    const mods = await window.apiFetch('/api/modifications');
+    const config = await window.apiFetch('/api/config');
+    const addedNames = config.modifications.map(m => m.name);
+    const grouped = {};
+    mods.forEach(m => { if (!grouped[m.category]) grouped[m.category] = []; grouped[m.category].push(m); });
+    const container = document.getElementById('mod-list');
+    container.innerHTML = Object.entries(grouped).map(([cat, items]) =>
+      `<div class="mod-category-header">${cat}</div>` +
+      items.map(m => {
+        const added = addedNames.includes(m.modification_name);
+        const price = (m.price_pkr / 1000000).toFixed(2);
+        const stars = '★'.repeat(Math.round(m.popularity_rating)) + '☆'.repeat(5 - Math.round(m.popularity_rating));
+        return `<div class="mod-item ${added ? 'added' : ''}" id="mod-${m.modification_name.replace(/\s/g,'_')}">
+          <div>
+            <div class="mod-name">${m.modification_name}</div>
+            <div class="mod-stars">${stars} <span style="font-size:0.72rem;color:var(--text-muted);font-family:'Space Mono',monospace">${m.warranty_years}yr warranty</span></div>
+          </div>
+          <div style="text-align:right">
+            <div class="mod-price">PKR ${price}M</div>
+            <button class="mod-add-btn ${added ? 'added' : ''}" onclick="toggleMod('${m.modification_name}', this)">
+              ${added ? '− Remove' : '+ Add'}
+            </button>
+          </div>
+        </div>`;
+      }).join('')
+    ).join('');
+    updateSummary(config);
+  }
+
+  async function toggleMod(name, btn) {
+    const isAdded = btn.classList.contains('added');
+    if (isAdded) { await removeMod(name); }
+    else {
+      const res = await window.apiFetch('/api/add_modification', { method: 'POST', body: JSON.stringify({ mod_name: name }) });
+      if (res.success) {
+        btn.textContent = '− Remove'; btn.classList.add('added');
+        btn.closest('.mod-item').classList.add('added');
+        document.getElementById('s-total').textContent = `${res.total}M`;
+        showToast(`Added: ${name}`);
+        const config = await window.apiFetch('/api/config');
+        renderModsList(config.modifications);
+        updateSummary(config);
+      } else { showToast(res.error, 'error'); }
+    }
+  }
+
+  async function removeMod(name) {
+    const res = await window.apiFetch('/api/remove_modification', { method: 'POST', body: JSON.stringify({ mod_name: name }) });
+    if (res.success) {
+      showToast(`Removed: ${name}`, 'error');
+      const id = `mod-${name.replace(/\s/g,'_')}`;
+      const item = document.getElementById(id);
+      if (item) { item.classList.remove('added'); const btn = item.querySelector('.mod-add-btn'); btn.textContent = '+ Add'; btn.classList.remove('added'); }
+      const config = await window.apiFetch('/api/config');
+      renderModsList(config.modifications);
+      document.getElementById('s-total').textContent = `${res.total}M`;
+    }
+  }
+
+  async function getPricePrediction() {
+    const box = document.getElementById('price-pred');
+    if (!box) return;
+    box.style.display = 'block'; 
+    box.innerHTML = '<div style="display:flex;gap:0.5rem;align-items:center"><div class="spinner"></div> Predicting…</div>';
+    
+    const res = await window.apiFetch('/api/predict_price', { method: 'POST', body: JSON.stringify({}) });
+    
+    if (res.error) { 
+        box.innerHTML = `<span style="color:var(--danger)">${res.error}</span>`; 
+        return; 
+    }
+    
+    const diff = res.predicted - res.current;  // predicted MINUS current
+    const absDiff = Math.abs(diff);
+    
+    let message, color, suggestion;
+    
+    if (absDiff <= 0.5) {
+        message = '✓ Well within estimate';
+        color = 'var(--success)';
+        suggestion = `Your build aligns perfectly with market trends.`;
+    } 
+    else if (diff > 0) {
+        // predicted > current → You're paying LESS than market average
+        message = '💰 Great Value!';
+        color = 'var(--success)';
+        suggestion = `You're paying PKR ${diff.toFixed(2)}M less than market average for this build.`;
+    } 
+    else {
+        // predicted < current → You're paying MORE than market average
+        message = '⚠ Higher than Market Average';
+        color = 'var(--danger)';
+        suggestion = `Consider removing some modifications to save PKR ${Math.abs(diff).toFixed(2)}M.`;
+    }
+    
+    box.innerHTML = `
+        <div style="color:var(--text-muted);margin-bottom:0.4rem">🤖 AI Price Estimate (Market Average)</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--gold)">PKR ${res.predicted}M</div>
+        <div style="margin-top:0.3rem;font-size:0.75rem;color:${color}">
+            ${message}
+        </div>
+        <div style="margin-top:0.2rem;font-size:0.7rem;color:var(--text-muted)">
+            ${suggestion}
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:0.4rem">
+            Your Build: PKR ${res.current}M | ${diff > 0 ? 'You save' : 'You pay extra'}: PKR ${Math.abs(diff).toFixed(2)}M
+        </div>`;
+        }
+
+  // ========== EDIT MODE: Direct Step 4 for modifications editing ==========
+  
+  async function checkForEditMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('edit') === 'true') {
+      // Wait for existing config to load
+      setTimeout(async function() {
+        try {
+          const config = await window.apiFetch('/api/config');
+          if (config && config.car_model) {
+            // Update state with existing config
+            state.category = config.category;
+            state.model = config.car_model;
+            state.engine = config.engine_type;
+            state.color = config.color;
+            state.fullModel = config.car_model;
+            
+            // Update UI to show selections
+            await updateUIWithExistingConfig(config);
+            
+            // Load modifications and jump directly to step 4
+            await loadMods();
+            goStep(4);
+            showToast('Editing modifications for ' + config.car_model, 'success');
+          } else {
+            showToast('No existing configuration found. Starting fresh.', 'error');
+          }
+        } catch(e) {
+          console.error('Edit mode error:', e);
+          showToast('Error loading configuration', 'error');
+        }
+      }, 500);
+    }
+  }
+
+  async function updateUIWithExistingConfig(config) {
+    // Highlight category
+    document.querySelectorAll('.category-card').forEach(card => {
+      const catName = card.querySelector('.cat-name')?.innerText;
+      if (catName === config.category) {
+        card.classList.add('selected');
+      }
+    });
+    
+    // Load models and select the right one
+    await loadModels();
+    
+    // Select the model
+    setTimeout(() => {
+      const modelCards = document.querySelectorAll('#model-picker .picker-card');
+      modelCards.forEach(card => {
+        const modelName = card.getAttribute('data-model');
+        if (modelName && config.car_model.includes(modelName)) {
+          card.click();
+        }
+      });
+    }, 300);
+    
+    // After engines load, select the right engine
+    setTimeout(() => {
+      const engineCards = document.querySelectorAll('#engine-picker .picker-card');
+      engineCards.forEach(card => {
+        if (card.getAttribute('data-engine') === config.engine_type) {
+          card.click();
+        }
+      });
+    }, 600);
+    
+    // Select color
+    setTimeout(() => {
+      const colorBtns = document.querySelectorAll('.color-btn');
+      colorBtns.forEach(btn => {
+        if (btn.getAttribute('data-color') === config.color) {
+          btn.click();
+        }
+      });
+    }, 900);
+    
+    // Update summary
+    updateSummary(config);
+  }
+
+  // Pre-load summary on mod page and check for edit mode
+  document.addEventListener('DOMContentLoaded', async () => {
+    const config = await window.apiFetch('/api/config');
+    if (config.car_model) updateSummary(config);
+    
+    // CHECK FOR EDIT MODE
+    checkForEditMode();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}AURUM — Smart Car Configurator{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Syne:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep:     #050711;
+      --bg-card:     #0a0d1a;
+      --bg-glass:    rgba(12, 16, 40, 0.85);
+      --primary:     #6c3fff;
+      --primary-glow:#8b5fff;
+      --accent:      #00d4ff;
+      --accent2:     #c084fc;
+      --border:      rgba(108, 63, 255, 0.25);
+      --border-light:rgba(108, 63, 255, 0.5);
+      --text:        #e8e4ff;
+      --text-muted:  #7b7a99;
+      --text-dim:    #4a4870;
+      --success:     #00ffb3;
+      --danger:      #ff4f6d;
+      --gold:        #ffd700;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid Bg ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(108,63,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,63,255,0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Orb Glow ── */
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(100px); pointer-events: none; z-index: 0;
+    }
+    .orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(108,63,255,0.12), transparent 70%); top: -200px; right: -200px; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,212,255,0.08), transparent 70%); bottom: 0; left: -100px; }
+
+    /* ── Navbar ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+      background: rgba(5, 7, 17, 0.8);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.4rem; font-weight: 900;
+      letter-spacing: 0.2em;
+      background: linear-gradient(135deg, var(--primary-glow), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 600; transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--accent); }
+
+    .btn-nav {
+      background: linear-gradient(135deg, var(--primary), #4f2dcc);
+      color: #fff; border: none; border-radius: 6px;
+      padding: 0.5rem 1.4rem; font-family: 'Syne', sans-serif;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none;
+      transition: box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 0 20px rgba(108,63,255,0.3);
+    }
+    .btn-nav:hover { box-shadow: 0 0 30px rgba(108,63,255,0.6); transform: translateY(-1px); }
+
+    /* ── Main ── */
+    main {
+      position: relative; z-index: 1;
+      padding-top: 72px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      border-color: var(--border-light);
+      box-shadow: 0 0 30px rgba(108,63,255,0.1);
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.6rem; border-radius: 8px;
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer; border: none; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #4f2dcc);
+      color: #fff; box-shadow: 0 4px 20px rgba(108,63,255,0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 4px 30px rgba(108,63,255,0.6); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.4);
+    }
+    .btn-outline:hover { background: rgba(0,212,255,0.08); border-color: var(--accent); }
+    .btn-danger {
+      background: rgba(255,79,109,0.15); color: var(--danger);
+      border: 1px solid rgba(255,79,109,0.3);
+    }
+    .btn-danger:hover { background: rgba(255,79,109,0.25); }
+    .btn-success {
+      background: rgba(0,255,179,0.12); color: var(--success);
+      border: 1px solid rgba(0,255,179,0.3);
+    }
+    .btn-success:hover { background: rgba(0,255,179,0.22); }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block; padding: 0.25rem 0.7rem; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .badge-purple { background: rgba(108,63,255,0.2); color: var(--primary-glow); border: 1px solid rgba(108,63,255,0.3); }
+    .badge-cyan   { background: rgba(0,212,255,0.12); color: var(--accent); border: 1px solid rgba(0,212,255,0.25); }
+    .badge-green  { background: rgba(0,255,179,0.1); color: var(--success); border: 1px solid rgba(0,255,179,0.2); }
+    .badge-gold   { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid rgba(255,215,0,0.2); }
+
+    /* ── Section Title ── */
+    .section-eyebrow {
+      font-family: 'Space Mono', monospace; font-size: 0.72rem;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .section-eyebrow::before {
+      content: ''; display: inline-block; width: 20px; height: 1px; background: var(--accent);
+    }
+    .section-title {
+      font-family: 'Orbitron', monospace; font-size: 2.2rem; font-weight: 800;
+      line-height: 1.1; margin-top: 0.5rem;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      padding: 1rem 1.5rem; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 600;
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.3s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.success { background: rgba(0,255,179,0.15); border: 1px solid rgba(0,255,179,0.4); color: var(--success); }
+    #toast.error   { background: rgba(255,79,109,0.15); border: 1px solid rgba(255,79,109,0.4); color: var(--danger); }
+
+    /* ── Loading ── */
+    .spinner {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid rgba(108,63,255,0.2);
+      border-top-color: var(--primary-glow);
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: rgba(108,63,255,0.4); border-radius: 3px; }
+
+    /* ── Fade In ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.6s ease forwards; }
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .delay-3 { animation-delay: 0.3s; opacity: 0; }
+    .delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+    /* ── Select / Input ── */
+    select, input[type=text], input[type=number] {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.65rem 1rem;
+      color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color 0.2s;
+      width: 100%;
+    }
+    select:focus, input:focus { border-color: var(--primary-glow); }
+    select option { background: #0d0f1f; }
+
+    /* ── Price Highlight ── */
+    .price-tag {
+      font-family: 'Orbitron', monospace; font-size: 1.8rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), #ffb347);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .price-sm {
+      font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* ── Stat box ── */
+    .stat-box {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.8rem 1rem; text-align: center;
+    }
+    .stat-val { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .stat-lbl { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <nav>
+    <a href="/" class="nav-logo">AURUM</a>
+    <div class="nav-links">
+      <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+      <a href="/browse" class="{% if request.path == '/browse' %}active{% endif %}">Browse</a>
+      <a href="/configure" class="{% if request.path == '/configure' %}active{% endif %}">Configure</a>
+      <a href="/segments" class="{% if request.path == '/segments' %}active{% endif %}">Insights</a>
+      <a href="/dashboard" class="btn-nav">My Build</a>
+    </div>
+  </nav>
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <div id="toast"></div>
+
+  <script>
+    function showToast(msg, type='success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = `show ${type}`;
+      setTimeout(() => t.className = '', 3000);
+    }
+
+    async function apiFetch(url, opts={}) {
+      const res = await fetch(url, { headers:{'Content-Type':'application/json'}, ...opts });
+      return res.json();
+    }
+  </script>
+  {% block scripts %}{% endblock %}
+
+<script>
+window.apiFetch = async function(url, opts = {}) {
+    try {
+        const response = await fetch(url, {
+            headers: { 'Content-Type': 'application/json' },
+            ...opts
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('API Error:', error);
+        return { error: error.message };
+    }
+};
+
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    setTimeout(() => t.className = '', 3000);
+}
+</script>
+</body>
+</html>
