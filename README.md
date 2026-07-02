@@ -14,7 +14,7 @@ The project combines a responsive Flask-based frontend with Machine Learning mod
 - 🤖 Receive intelligent modification recommendations based on historical user configurations
 - 📊 Explore buyer segmentation using K-Means Clustering
 - 🔄 RESTful API endpoints built with Flask enable communication between the frontend and backend
-- 📁 Create, manage, switch, and delete multiple vehicle configurations within a single session
+- 📁 Create, manage, switch, save, and delete multiple vehicle configurations within a single session
 - 🌐 Interactive and responsive web interface
 
 ---
