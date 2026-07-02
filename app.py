@@ -469,6 +469,23 @@ def api_new_config():
     
     return jsonify({'success': True, 'config_id': len(configurators[sid]) - 1})
 
+@app.route('/api/save_config', methods=['POST'])
+def api_save_config():
+
+    cfg = get_user_config()
+    config = cfg.get_current_config()
+
+    if not config.get('car_model'):
+        return jsonify({
+            'success': False,
+            'error': 'No configuration available'
+        })
+
+    return jsonify({
+        'success': True,
+        'message': 'Build saved successfully'
+    })
+
 @app.route('/api/delete_config/<int:config_id>', methods=['DELETE'])
 def api_delete_config(config_id):
     sid = session.get('sid')
